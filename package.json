@@ -1,0 +1,35 @@
+{
+  "name": "claude-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "ts-node-dev --respawn genkit.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ai-sdk/openai": "3.0.53",
+    "@anthropic-ai/sdk": "0.91.1",
+    "@genkit-ai/core": "1.33.0",
+    "@genkit-ai/google-genai": "1.33.0",
+    "ai": "6.0.168",
+    "cors": "2.8.6",
+    "dotenv": "17.4.2",
+    "express": "5.2.1",
+    "genkit": "1.33.0",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@types/cors": "2.8.19",
+    "@types/express": "5.0.6",
+    "@types/node": "25.6.0",
+    "node-fetch": "3.3.2",
+    "ts-node-dev": "2.0.0",
+    "typescript": "6.0.3"
+  }
+}
