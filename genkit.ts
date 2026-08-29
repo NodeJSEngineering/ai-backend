@@ -7,8 +7,12 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 const ai = genkit({
-  plugins: [googleAI()],
-  model: googleAI.model('gemini-2.5-flash', {
+  plugins: [
+    googleAI({
+      ...(process.env.GEMINI_API_KEY ? { apiKey: process.env.GEMINI_API_KEY } : {}),
+    }),
+  ],
+  model: googleAI.model('gemini-3.7-flash', {
     temperature: 0.8,
   }),
 });
@@ -129,7 +133,7 @@ export const searchFlow = ai.defineFlow(
 
     // 4. Generate the embedding using Google's text-embedding model
     const embeddingResponse = await ai.embed({ 
-      embedder: 'googleai/text-embedding-004', 
+      embedder: 'googleai/gemini-embedding-001', 
       content: query 
     }); 
 // 2. Extract the raw vector (array of numbers) from the first result

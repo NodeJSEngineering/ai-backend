@@ -1,6 +1,6 @@
 import { streamText } from 'ai';
 import { openai } from '@ai-sdk/openai';
-import { weatherTool } from './tools/weather';
+import { weatherTool } from './tools/weather.js';
 
 /**
  * Main agent that uses OpenAI GPT with weather tool integration

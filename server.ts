@@ -4,7 +4,7 @@ import { openai } from '@ai-sdk/openai';
 import Anthropic from '@anthropic-ai/sdk';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { weatherTool } from './tools/weather';
+import { weatherTool } from './tools/weather.js';
 
 // Load environment variables from .env file
 dotenv.config();
