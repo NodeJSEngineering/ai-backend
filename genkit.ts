@@ -1,24 +1,29 @@
 
 import { genkit, z } from 'genkit';
 import { googleAI } from '@genkit-ai/google-genai'; // @genkit-ai/googleai deprecated now
-
+import express from "express";
 import * as dotenv from "dotenv";
+import cors from 'cors';
 
 dotenv.config();
-
+const geminiModel = 'gemini-3.7-flash';
+const googleAiModel = "googleai/gemini-2.5-flash";
 const ai = genkit({
   plugins: [
     googleAI({
       ...(process.env.GEMINI_API_KEY ? { apiKey: process.env.GEMINI_API_KEY } : {}),
     }),
   ],
-  model: googleAI.model('gemini-3.7-flash', {
-    temperature: 0.8,
+  model: googleAI.model(geminiModel, {
+    temperature: 0.4,
   }),
 });
 
-import express from "express";
+
 const app = express();
+app.use(cors()); // Allow Angular to talk to this server
+app.use(express.json());
+
 app.post("/api/ai", async (req, res) => {
  const { prompt } = req.body;
  const result = await ai.generate({ prompt });
@@ -26,12 +31,12 @@ app.post("/api/ai", async (req, res) => {
 });
 app.listen(3000, () => console.log("Server running on http://localhost:3000"));
 
-// const chatFlow = defineFlow("chatFlow", async (input) => {
-//  return ai.generateStream({
-//    prompt: input,
-//    model: "googleai/gemini-1.5-flash"
-//  });
-// });
+const chatFlow = ai.defineFlow("chatFlow", async (input) => {
+ return ai.generateStream({
+   prompt: input,
+   model:googleAiModel 
+ });
+});
 
 // ai.defineTool("getWeather", async (location) => {
 //  return fetchWeather(location);
@@ -77,11 +82,6 @@ export const orderSupportFlow = ai.defineFlow(
   }
 );
 
-import cors from 'cors';
-
-app.use(cors()); // Allow Angular to talk to this server
-app.use(express.json());
-
 const ProductSchema = z.object({ 
     name: z.string(), 
     description: z.string(), 
@@ -94,7 +94,7 @@ app.post('/api/generate-product', async (req, res) => {
 
   try {
     const { output } = await ai.generate({ 
-      model: 'googleai/gemini-2.5-flash', 
+      model: googleAiModel, 
       prompt: `Extract the product details from this user input: "${prompt}"`, 
       output: { schema: ProductSchema } 
     });
@@ -143,7 +143,6 @@ export const searchFlow = ai.defineFlow(
   } 
 );
 
-// --- Demo Execution ---
 async function runDemo() {
   try {
     // To run a flow, you call it just like a normal async function
@@ -164,7 +163,7 @@ export const summariseFlow = ai.defineFlow(
   async (records) => { 
     const { text } = await ai.generate({ 
       // 1. Use the string identifier
-      model: 'googleai/gemini-2.5-flash', 
+      model: googleAiModel, 
       // 2. FIX: Wrap the prompt in backticks (`) for template literals
       prompt: `Summarize the following records:\n${records.join('\n')}` 
     }); 
@@ -182,7 +181,7 @@ const ImproveSchema = z.object({
 export async function improveProductDescription(currentDescription: string) {
   try {
     const { output } = await ai.generate({ 
-      model: 'googleai/gemini-2.5-flash', 
+      model: googleAiModel, 
       prompt: `Improve this product desc: "${currentDescription}"`, 
       output: { schema: ImproveSchema } 
     });
@@ -219,17 +218,12 @@ const mockVectorDb = {
  */
 async function autoFillProduct(userInput: string) {
   const { output } = await ai.generate({
-    model: 'googleai/gemini-2.5-flash',
+    model: googleAiModel,
     prompt: `Extract the product details from this user input: "${userInput}"`,
     output: { schema: ProductSchema }
   });
   return output;
 }
-
-
-// ============================================================================
-// 4. MASTER DEMO EXECUTION
-// ============================================================================
 
 async function runMasterDemo() {
   console.log("🚀 STARTING GENKIT AI MASTER DEMO...\n");
@@ -286,5 +280,4 @@ async function runMasterDemo() {
   }
 }
 
-// Run the application
 runMasterDemo();

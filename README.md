@@ -19,23 +19,7 @@ I'm Sam, and I'm passionate about product engineering and web development. I cre
 - **[ Video Conferencing Tool ]**: [Unlock the potential of video conferencing software development. Dive into our guide for insights on key features and cost factors.  If you're looking to integrate video communication into your app or planning to build a video streaming/conference app from scratch, create a fully customized audio & video conferencing app.]
 
 
-### About the app Weather API with Vercel AI SDK
-
-A working example of integrating the Vercel AI SDK (`ai` package) with OpenAI's GPT models and real-time weather data fetching.
-
-agent.ts - Agent class which uses tool for fetching weather
-genkit.ts - Genkit library implementation for fetching weather
-server.ts - Express server for /api/chat endpoint
-test-weather-api.ts - Test script to test the API
-tools - weather.ts - Tool for fetching weather information
-
-## Setup
-
-## How to Run
-
-npm run dev - genkit 
-npm run build
-npm start
+### About the app 
 
 ### 1. Environment Variables
 
@@ -50,6 +34,7 @@ PORT=3000
 **Get your API keys:**
 - **OpenAI API Key**: https://platform.openai.com/api-keys
 - **Weather API Key**: https://www.weatherapi.com/signup.aspx (free tier available)
+https://platform.claude.com/settings/keys
 
 ### 2. Install Dependencies
 
@@ -82,7 +67,7 @@ Server will start at `http://localhost:3000`
 
 ## Usage
 
-### API Endpoint: POST `/api/chat`
+### API Anthropic Chat endpoint: POST `/api/chat`
 
 Send a request with messages array:
 
@@ -97,6 +82,33 @@ curl -X POST http://localhost:3000/api/chat \
       }
     ]
   }'
+
+  curl -X POST http://localhost:3000/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "provider": "gemini",
+    "prompt": "Hello Gemini, explain TypeScript interfaces in one sentence."
+  }'
+
+
+curl -X POST http://localhost:3000/api/chat-gemini \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "Hello from Gemini endpoint!"
+  }'
+
+
+curl -X POST http://localhost:3000/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "provider": "gemini",
+    "messages": [
+      { "role": "user", "content": "What is the capital of France?" },
+      { "role": "assistant", "content": "The capital of France is Paris." },
+      { "role": "user", "content": "What is its population?" }
+    ]
+  }'
+
 ```
 
 ### TypeScript Example
@@ -135,16 +147,95 @@ console.log(text);
 
 ```
 ├── server.ts          # Express server with /api/chat endpoint
-├── agent.ts           # Vercel AI agent with weather tool
+├── agent.ts           # Vercel AI agent with weather tool - Agent class which uses tool for fetching weather
 ├── tools/
-│   └── weather.ts     # Weather tool definition and execution
-├── test-weather-api.ts # Test script
+│   └── weather.ts     # Weather tool definition and execution - Tool for fetching weather information
+├── test-weather-api.ts # Test script to test the API
 ├── package.json
 ├── tsconfig.json
 ├── .env               # Environment variables
 └── .env.sample        # Sample env variables
+
+Weather API with Vercel AI SDK
+A working example of integrating the Vercel AI SDK (`ai` package) with OpenAI's GPT models and real-time weather data fetching.
+
+genkit.ts - Genkit library implementation for fetching weather - npm run dev
 ```
 
+### output
+ ai.generate
+• Unified API: Call different models and providers without changing your core application logic.
+• Configuration: Control parameters like temperature, topP, topK, maxOutputTokens, and stopSequences.
+• Structured Outputs: Validate and parse model responses safely using Zod schemas or native language types.
+• Multimodal Support: Pass text, system prompts, conversation history, images, audio, or video inputs.
+• Streaming: Use streaming methods (such as generateStream()) to handle long or real-time responses chunk by chunk.
+• Tool Calling: Allow models to invoke custom functions or external APIs automatically
+
+ai.defineTool() is a method used to create executable functions that an LLM (Large Language Model) can request and run during a generation or chat session
+
+ai.defineFlow in Firebase Genkit is a core wrapper function that turns standard application or AI logic into an observable, type-safe, and callable unit - we use generate under this - we use embed under this
+
+ai.embed
+You can generate vector embeddings in Firebase Genkit by calling the unified ai.embed() function (or genkit.Embed in Go) with a configured embedder plugin 
+```
+🚀 STARTING GENKIT AI MASTER DEMO...
+
+--------------------------------------------------
+📦 DEMO 1: Auto-Fill Product from Text
+Input: "blue running shoes for men 49 dollars"
+Server running on http://localhost:3000
+Output:
+{
+  name: 'Running Shoes',
+  description: 'Blue running shoes for men',
+  price: 49,
+  tags: [ 'blue', 'running', 'shoes', 'men' ]
+}
+
+--------------------------------------------------
+🔍 DEMO 2: Semantic Vector Search
+Query: "cheap red shoes for kids"
+Processing search query: "cheap red shoes for kids"
+[VectorDB] Searching with a vector of 3072 dimensions...
+Output (Mock DB Matches):
+┌─────────┬─────┬────────────────────────────┬───────┐
+│ (index) │ id  │ name                       │ price │
+├─────────┼─────┼────────────────────────────┼───────┤
+│ 0       │ 101 │ 'Kids Red Running Shoes'   │ 29.99 │
+│ 1       │ 102 │ 'Toddler Crimson Sneakers' │ 19.99 │
+└─────────┴─────┴────────────────────────────┴───────┘
+
+--------------------------------------------------
+📝 DEMO 3: Summarize Records
+Input Records: [
+  'Item 101 sold 5 units today.',
+  'Item 102 is out of stock in warehouse B.',
+  'Customer complaint regarding shipping delay on Item 101.'
+]
+
+Generated Summary:
+"Here's a summary of the records:
+
+*   **Item 101** sold 5 units today and has received a customer complaint regarding a shipping delay.
+*   **Item 102** is currently out of stock in warehouse B."
+
+--------------------------------------------------
+✨ DEMO 4: Improve Description (Structured)
+Original: "These r red shoes. They fit kids feet good. Cheap price."
+
+Improved Copy:
+"These vibrant red shoes are designed for a comfortable and secure fit on children's feet, all at an affordable and budget-friendly price."
+
+Key Changes Made:
+ - Replaced informal language ('r', 'good') with professional phrasing.
+ - Added more descriptive adjectives ('vibrant').
+ - Expanded on benefits ('comfortable and secure fit').
+ - Rephrased 'cheap price' to 'affordable and budget-friendly' for a more positive connotation.
+ - Combined sentences for better flow and readability.
+
+--------------------------------------------------
+✅ DEMO COMPLETE!
+```
 ## How It Works
 
 1. **User sends a message** to `/api/chat` endpoint
